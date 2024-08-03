@@ -1,40 +1,76 @@
 {% extends "blog/base.html" %}
 
-{% block content%}
+{% block content %}
 
-<h1>DASHBOARD</h1>
-{% for post in posts%}
-  <article class="media content-section">
-    <img  class="rounded-circle article-img" src="{{ post.author.profile.image.url }}"/>"
-    <div class="media-body">
-      <div class="article-metadata">
-        <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
-        <small class="text-muted">{{ post.date_posted }}</small>
-      </div>
-      <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
-      <p class="article-content">{{ post.content }}</p>
+<div class="container mt-4">
+    <h1 class="text-center">DASHBOARD</h1>
+    <div class="row">
+        <div class="col-md-8">
+            {% for post in posts %}
+            <article class="media content-section">
+                <img class="rounded-circle article-img mr-3" src="{{ post.author.profile.image.url }}" />
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+                        <small class="text-muted">{{ post.date_posted }}</small>
+                    </div>
+                    <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
+                    <p class="article-content">{{ post.content }}</p>
+                </div>
+            </article>
+            {% endfor %}
+            
+            {% if is_paginated %}
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            <div class="content-section">
+                <h3>Welcome, {{ user.username }}!</h3>
+                <p class="text-muted">Shortcut Dashboard:</p>
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'profile' %}">Profile</a></li>
+                    <li class="list-group-item list-group-item-light"><img class="rounded-circle account-img" src="{{ user.profile.image.url }}"></li>
+                    <li class="list-group-item list-group-item-light">{{ user.username }}</li>
+                    <li class="list-group-item list-group-item-light">{{ user.email }}</li>
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'post-create' %}">Post</a></li>
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </article> 
-{% endfor%}
-{% if is_paginated %}
+</div>
 
-      {% if page_obj.has_previous %}
-        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-      {% endif %}
-
-      {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-          <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-          <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
-        {% endif %}
-      {% endfor %}
-
-      {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-      {% endif %}
-
-    {% endif %}
 {% endblock %}
