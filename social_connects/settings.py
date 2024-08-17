@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-y1vw2g6ydfknh*-m&+f$6@05-q+1=3ym+d&y)oh^1me6vzf&#f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost','http://sconnectsproject-env.eba-6g63qftx.us-east-2.elasticbeanstalk.com/']
+ALLOWED_HOSTS = ['127.0.0.1','Sconnectsproject-env.eba-6g63qftx.us-east-2.elasticbeanstalk.com']
 
 
 # Application definition
@@ -120,6 +120,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
