@@ -77,10 +77,22 @@ WSGI_APPLICATION = 'social_connects.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+DB_NAME = os.environ.get("RDS_DB_NAME")
+DB_USERNAME = os.environ.get("RDS_USERNAME")
+DB_PASSWORD = os.environ.get("RDS_PASSWORD")
+DB_HOST = os.environ.get("RDS_HOST")
+
+print('!!!!!!!!!!!!!!!!', DB_NAME, DB_USERNAME, DB_HOST, DB_PASSWORD)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DB_NAME,
+        'USER': DB_USERNAME,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        
+        
     }
 }
 
