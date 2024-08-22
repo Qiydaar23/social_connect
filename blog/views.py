@@ -12,11 +12,32 @@ from django.views.generic import (
 
 from social_connects.serializers import PostSerializer
 from .models import Post
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
+
 
 def blogdata(request):
-    data = Post.objects.all()
-    serializer = PostSerializer(data, many=True)
+    postdata = Post.objects.all()
+    serializer = PostSerializer(postdata, many=True)
     return JsonResponse({'blogdata': serializer.data})
+
+@api_view(['GET','PUT','DELETE'])
+def postdetail(request, post_id):
+    try:
+        postdata = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)   
+    if request.method == 'GET':
+        serializer = PostSerializer(postdata)
+        return JsonResponse({'post': serializer.data})
+    elif request.method == 'PUT':
+        serializer = PostSerializer(postdata, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 
 def home(request):
