@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -8,7 +9,14 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
+
+from social_connects.serializers import PostSerializer
 from .models import Post
+
+def blogdata(request):
+    data = Post.objects.all()
+    serializer = PostSerializer(data, many=True)
+    return JsonResponse({'blogdata': serializer.data})
 
 
 def home(request):

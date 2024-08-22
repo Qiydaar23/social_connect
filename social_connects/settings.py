@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ['127.0.0.1','Sconnectsproject-env.eba-6g63qftx.us-east-2.elasti
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'crispy_bootstrap4',
     'users.apps.UsersConfig',
     'crispy_forms',
