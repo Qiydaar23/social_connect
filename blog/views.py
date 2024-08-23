@@ -14,15 +14,26 @@ from social_connects.serializers import PostSerializer
 from .models import Post
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
-
+@api_view(['GET','POST'])
+@permission_classes([IsAuthenticated])
 def blogdata(request):
-    postdata = Post.objects.all()
-    serializer = PostSerializer(postdata, many=True)
-    return JsonResponse({'blogdata': serializer.data})
-
+    if request.method == "GET":
+        postdata = Post.objects.all()
+        serializer = PostSerializer(postdata, many=True)
+        return JsonResponse({'blogdata': serializer.data})
+    elif request.method == "POST":
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            
 @api_view(['GET','PUT','DELETE'])
+@permission_classes([IsAuthenticated])
 def postdetail(request, post_id):
     try:
         postdata = Post.objects.get(pk=post_id)
@@ -37,6 +48,9 @@ def postdetail(request, post_id):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        postdata.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
 
 
